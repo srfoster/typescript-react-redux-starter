@@ -8,7 +8,7 @@ class App extends React.Component<IAppProps, void> {
   render() {
     return (
       <div>
-       <h1>Hi.....</h1>
+       <h1>Hi</h1>
       </div>
     );
   };

@@ -3,12 +3,8 @@
 const path = require('path');
 const express = require('express');
 
-var db = require('seraph')({
-  server: 'http://localhost:7474',
-  user: 'neo4j',
-  pass: 'password'
-})
-var model = require('seraph-model');
+
+import World from "./models/world"
 
 /**
  * Installs routes that serve production-bundled client-side assets.
@@ -21,16 +17,9 @@ module.exports = (app) => {
   app.use(express.static(distPath));
 
   app.get('/api/worlds/:id', (req, res) => {
-    var World = model(db, 'World');
-    var Chunk = model(db, 'Chunk');
-
-    World.compose(Chunk, "chunks", "In")
-
-    World.query('MATCH (w:World) WHERE ID(w) = ' + req.params.id, {}, {varName: "w", include: {chunks: { many:true, model: Chunk, rel: 'In', direction: 'in' }}}  ,  function(err, world) {
-      //res.send(err)
-      res.send({world: world})
-    });
-
+    World.find(req.params.id, function(world){
+      res.send(world.toJSON()) 
+    }) 
   });
 
   app.get('*', (req, res) => {
